@@ -31,23 +31,26 @@ jobs:
 
       - name: Create RDP User with Secure Password
         run: |
-          # FIXED PASSWORD
-           $plainPassword = "MyStrong@12345"   # 👈 apna fixed password
+         # FIXED PASSWORD
+         $plainPassword = "MyStrong@12345"   # 👈 yahin password fix hai
 
-          # Create user
-           New-LocalUser -Name "RDP" -Password $securePass -AccountNeverExpires
+         # Convert to SecureString
+         $securePass = ConvertTo-SecureString $plainPassword -AsPlainText -Force
 
-           # Add permissions
-            Add-LocalGroupMember -Group "Administrators" -Member "RDP"
-            Add-LocalGroupMember -Group "Remote Desktop Users" -Member "RDP"
+         # Create user WITH PASSWORD
+         New-LocalUser -Name "RDP" -Password $securePass -AccountNeverExpires
 
-           # Verify user
-           if (-not (Get-LocalUser -Name "RDP")) {
-               Write-Error "User creation failed"
-               exit 1
-           }
+         # Add permissions
+         Add-LocalGroupMember -Group "Administrators" -Member "RDP"
+         Add-LocalGroupMember -Group "Remote Desktop Users" -Member "RDP"
 
-           
+         # Verify user
+         if (-not (Get-LocalUser -Name "RDP")) {
+             Write-Error "User creation failed"
+             exit 1
+         }
+
+         Write-Host "RDP user created successfully"
 
 
           $securePass = ConvertTo-SecureString $password -AsPlainText -Force

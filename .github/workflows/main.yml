@@ -31,22 +31,23 @@ jobs:
 
       - name: Create RDP User with Secure Password
         run: |
-          # FIXED PASSWORD
-          $plainPassword = "#_@prince"
+         # FIXED PASSWORD
+         $plainPassword = "Prince@123"   # ✔ valid password
 
-          $securePass = ConvertTo-SecureString $plainPassword -AsPlainText -Force
+         $securePass = ConvertTo-SecureString $plainPassword -AsPlainText -Force
 
-          New-LocalUser -Name "RDP" -Password $securePass -AccountNeverExpires
+         # CREATE USER (PASSWORD MUST BE PASSED)
+         New-LocalUser -Name "RDP" -Password $securePass -AccountNeverExpires
 
-          Add-LocalGroupMember -Group "Administrators" -Member "RDP"
-          Add-LocalGroupMember -Group "Remote Desktop Users" -Member "RDP"
+         Add-LocalGroupMember -Group "Administrators" -Member "RDP"
+         Add-LocalGroupMember -Group "Remote Desktop Users" -Member "RDP"
 
-          if (-not (Get-LocalUser -Name "RDP")) {
-              Write-Error "User creation failed"
-              exit 1
-          }
+         if (-not (Get-LocalUser -Name "RDP")) {
+             Write-Error "User creation failed"
+             exit 1
+         }
 
-          Write-Host "RDP user created successfully"
+         Write-Host "RDP user created successfully"
 
           
       - name: Install Tailscale
